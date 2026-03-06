@@ -20,7 +20,7 @@ st.title("Staff Payslip Portal")
 # --- WELCOME MESSAGE ---
 st.markdown("""
 Welcome to the all new Staff Payslip Portal! 😊  
-Log in using your Email and Staff ID to access your payslip.  
+Log in below using your Email and Staff ID to access your payslip.  
 You can preview it here and download it for your records.
 """)
 
@@ -89,3 +89,4 @@ if login_button:
         
     else:
         st.error("Invalid Email or Staff ID. Please try again.")
+
