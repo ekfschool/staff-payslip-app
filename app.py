@@ -16,7 +16,13 @@ df = load_data()
 
 # --- APP TITLE ---
 st.title("Staff Payslip Portal")
-st.write("Log in using your Email and Staff ID to view your payslip.")
+
+# --- WELCOME MESSAGE ---
+st.markdown("""
+Welcome to the all new Staff Payslip Portal! 😊  
+Log in using your Email and Staff ID to access your payslip.  
+You can preview it here and download it for your records.
+""")
 
 # --- LOGIN FORM ---
 st.subheader("Login")
@@ -83,5 +89,3 @@ if login_button:
         
     else:
         st.error("Invalid Email or Staff ID. Please try again.")
-
-
