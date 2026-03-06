@@ -6,7 +6,7 @@ import re
 # --- CONFIG ---
 SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSuvLtCwDy7OEtS4zVnH9aVY3f2-WJlU9jetey3Cnmmf_MnZfCb8Lh1Z-sKDilEmEiwJ8JAWZCfhEQQ/pub?output=csv"
 
-# Load data from Google Sheet
+# --- LOAD DATA ---
 @st.cache_data
 def load_data():
     df = pd.read_csv(SHEET_URL)
@@ -14,20 +14,20 @@ def load_data():
 
 df = load_data()
 
+# --- APP TITLE ---
 st.title("Staff Payslip Portal")
 st.write("Log in using your Email and Staff ID to view your payslip.")
 
-# --- LOGIN ---
+# --- LOGIN FORM ---
 st.subheader("Login")
 email_input = st.text_input("Staff Email")
 staffid_input = st.text_input("Staff ID", type="password")
 login_button = st.button("Login")
 
+# --- HELPER FUNCTION ---
 def convert_to_drive_preview(url):
     """
-    Convert a standard Google Drive link to a preview link and get file ID.
-    Works with links like:
-    https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+    Converts a standard Google Drive link to a preview link and a download link.
     """
     match = re.search(r'/d/([a-zA-Z0-9_-]+)/', url)
     if match:
@@ -39,24 +39,28 @@ def convert_to_drive_preview(url):
         # fallback if regex fails
         return url, url
 
+# --- LOGIN CHECK ---
 if login_button:
     user = df[(df['Staff Email'] == email_input) & (df['Staff ID'] == staffid_input)]
     
     if not user.empty:
-        # Display Full Name as large header
-        st.markdown(f"# {user.iloc[0]['Staff Full Name']}")
+        user_row = user.iloc[0]
         
-        # Display other details
-        st.write("**Staff ID:**", user.iloc[0]['Staff ID'])
-        st.write("**Gender:**", user.iloc[0]['Gender'])
-        st.write("**Grade Level:**", user.iloc[0]['Grade Level'])
+        # --- STAFF DETAILS ---
+        st.markdown(f"# {user_row['Staff Full Name']}")
+        st.write("**Staff ID:**", user_row['Staff ID'])
+        st.write("**Grade Level:**", user_row['Grade Level'])
+        st.write("**Gender:**", user_row['Gender'])
         
-        # Get preview and download URLs
-        pdf_original_url = user.iloc[0]['Payslip file']
+        # --- PDF PREVIEW ---
+        if 'Month' in user_row.index:
+            st.subheader(f"Payslip Preview - {user_row['Month']}")
+        else:
+            st.subheader("Payslip Preview")
+        
+        pdf_original_url = user_row['Payslip file']
         pdf_preview_url, pdf_download_url = convert_to_drive_preview(pdf_original_url)
         
-        # Display PDF preview (mobile-friendly)
-        st.subheader("Payslip Preview")
         pdf_display = f'''
         <iframe 
             src="{pdf_preview_url}" 
@@ -68,12 +72,12 @@ if login_button:
         '''
         st.components.v1.html(pdf_display, height=650, scrolling=True)
         
-        # Download button
+        # --- DOWNLOAD BUTTON ---
         pdf_content = requests.get(pdf_download_url).content
         st.download_button(
             label="Download Payslip",
             data=pdf_content,
-            file_name=f"{user.iloc[0]['Staff Full Name']}_Payslip.pdf",
+            file_name=f"{user_row['Staff Full Name']}_Payslip.pdf",
             mime="application/pdf"
         )
         
