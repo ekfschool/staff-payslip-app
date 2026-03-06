@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # --- CONFIG ---
-SHEET_URL = "PASTE_YOUR_CSV_LINK_HERE"
+SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSuvLtCwDy7OEtS4zVnH9aVY3f2-WJlU9jetey3Cnmmf_MnZfCb8Lh1Z-sKDilEmEiwJ8JAWZCfhEQQ/pub?output=csv"
 
 @st.cache_data
 def load_data():
@@ -29,4 +29,5 @@ if login_button:
         st.subheader("Download Payslip")
         st.markdown(f"[Click here to download your payslip]({user.iloc[0]['Payslip file']})")
     else:
+
         st.error("Invalid Email or Staff ID. Please try again.")
