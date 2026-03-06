@@ -51,7 +51,6 @@ if login_button:
         st.write("**Staff ID:**", user_row['Staff ID'])
         st.write("**Grade Level:**", user_row['Grade Level'])
         st.write("**Gender:**", user_row['Gender'])
-        st.write("**Month:**", user_row['Month'])
         
         # --- PDF PREVIEW ---
         if 'Month' in user_row.index:
@@ -84,4 +83,5 @@ if login_button:
         
     else:
         st.error("Invalid Email or Staff ID. Please try again.")
+
 
